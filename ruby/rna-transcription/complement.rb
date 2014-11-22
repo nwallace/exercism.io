@@ -1,33 +1,13 @@
+require "ostruct"
+
 class Complement
-  class DNAComplement
-    def self.name
-      "dna"
-    end
 
-    def self.nucleotides
-      ["G", "C", "T", "A"]
-    end
+  dna_complement = OpenStruct.new(name: "dna", nucleotides: ["G", "C", "T", "A"])
+  rna_complement = OpenStruct.new(name: "rna", nucleotides: ["C", "G", "A", "U"])
+  dna_complement.complement = rna_complement
+  rna_complement.complement = dna_complement
 
-    def self.complement
-      RNAComplement
-    end
-  end
-
-  class RNAComplement
-    def self.name
-      "rna"
-    end
-
-    def self.nucleotides
-      ["C", "G", "A", "U"]
-    end
-
-    def self.complement
-      DNAComplement
-    end
-  end
-
-  COMPLEMENT_TYPES = [DNAComplement, RNAComplement]
+  COMPLEMENT_TYPES = [dna_complement, rna_complement]
 
   class << self
     COMPLEMENT_TYPES.each do |complement_type|
