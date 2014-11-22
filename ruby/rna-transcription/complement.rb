@@ -1,22 +1,40 @@
 class Complement
+  class DNAComplement
+    def self.name
+      "dna"
+    end
 
-  COMPLEMENTS = {
-    dna: {
-      nucleotides: ["G", "C", "T", "A"],
-      complements: :rna,
-    },
-    rna: {
-      nucleotides: ["C", "G", "A", "U"],
-      complements: :dna
-    },
-  }
+    def self.nucleotides
+      ["G", "C", "T", "A"]
+    end
+
+    def self.complement
+      RNAComplement
+    end
+  end
+
+  class RNAComplement
+    def self.name
+      "rna"
+    end
+
+    def self.nucleotides
+      ["C", "G", "A", "U"]
+    end
+
+    def self.complement
+      DNAComplement
+    end
+  end
+
+  COMPLEMENT_TYPES = [DNAComplement, RNAComplement]
 
   class << self
-    COMPLEMENTS.each do |_na, complement|
-      define_method("of_#{_na}") do |strand|
-        before = complement.fetch(:nucleotides)
-        after  = COMPLEMENTS.fetch(complement.fetch(:complements)).fetch(:nucleotides)
-        strand.tr(for_conversion.join, conversions.join)
+    COMPLEMENT_TYPES.each do |complement_type|
+      define_method("of_#{complement_type.name}") do |strand|
+        before = complement_type.nucleotides
+        after  = complement_type.complement.nucleotides
+        strand.tr(before.join, after.join)
       end
     end
   end
