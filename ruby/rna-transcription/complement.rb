@@ -1,17 +1,23 @@
 class Complement
 
-  DNA_TO_RNA = {
-    "G" => "C",
-    "C" => "G",
-    "T" => "A",
-    "A" => "U",
+  COMPLEMENTS = {
+    dna: {
+      nucleotides: ["G", "C", "T", "A"],
+      complements: :rna,
+    },
+    rna: {
+      nucleotides: ["C", "G", "A", "U"],
+      complements: :dna
+    },
   }
 
-  def self.of_dna(strand)
-    strand.tr(DNA_TO_RNA.keys.join, DNA_TO_RNA.values.join)
-  end
-
-  def self.of_rna(strand)
-    strand.tr(DNA_TO_RNA.values.join, DNA_TO_RNA.keys.join)
+  class << self
+    COMPLEMENTS.each do |_na, complement|
+      define_method("of_#{_na}") do |strand|
+        before = complement.fetch(:nucleotides)
+        after  = COMPLEMENTS.fetch(complement.fetch(:complements)).fetch(:nucleotides)
+        strand.tr(for_conversion.join, conversions.join)
+      end
+    end
   end
 end
