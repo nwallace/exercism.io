@@ -27,4 +27,4 @@
   ([first-verse]
     (sing first-verse 0))
   ([first-verse last-verse]
-    (join "\n" (map verse (reverse (range last-verse (inc first-verse)))))))
+    (join "\n" (map verse (range first-verse (dec last-verse) -1)))))
