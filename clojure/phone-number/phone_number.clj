@@ -1,20 +1,21 @@
-(ns phone-number)
+(ns phone-number
+  (:require [clojure.string :as str]))
 
-(defn- valid-phone? [phone-str]
-  (let [digits (.replaceAll phone-str "[^0-9]" "")]
-    (or
-      (= 10 (count digits))
-      (and
-        (= 11 (count digits))
-        (= \1 (first digits))))))
+(defn- digits [phone-str]
+  (str/replace phone-str #"\D" ""))
+
+(defn- phone-parts [phone-str]
+  (let [parts (re-find #"\A1?(\d{3})(\d{3})(\d{4})\Z" (digits phone-str))]
+    (if parts
+      (rest parts)
+      '("000" "000" "0000"))))
 
 (defn number [phone-str]
-  (if (valid-phone? phone-str)
-    "1234567890"
-    "0000000000"))
+  (str/join (phone-parts phone-str)))
 
 (defn area-code [phone-str]
-  "123")
+  (first (phone-parts phone-str)))
 
 (defn pretty-print [phone-str]
-  "(123) 456-7890")
+  (let [[area-code three four] (phone-parts phone-str)]
+    (str "(" area-code ") " three "-" four)))
