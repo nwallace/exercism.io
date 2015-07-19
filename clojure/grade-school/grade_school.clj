@@ -1,0 +1,17 @@
+(ns grade-school)
+
+(defn map-values [mapping-func coll]
+  (reduce-kv
+    (fn [memo k v]
+      (assoc memo k (mapping-func v)))
+    {}
+    coll))
+
+(defn add [db student grade-number]
+  (assoc db grade-number (conj (db grade-number []) student)))
+
+(defn grade [db grade-number]
+  (db grade-number []))
+
+(defn sorted [db]
+  (into (sorted-map) (map-values sort db)))
