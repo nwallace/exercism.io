@@ -1,4 +1,21 @@
 target/
 .lein-*
 
-/*
+coffeescript/
+csharp/
+erlang/
+go/
+java/
+lisp/
+objective-c/
+perl5/
+python/
+scala/
+cpp/
+elixir/
+fsharp/
+haskell/
+lua/
+ocaml/
+plsql/
+swift/
