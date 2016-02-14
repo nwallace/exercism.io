@@ -5,17 +5,18 @@
        vals
        (apply max)))
 
-(def ^:private type-tests
-  (array-map
-    :illogical   #(let [sorted (sort %)]
-                    (<= (apply + (take 2 sorted))
-                        (last sorted)))
-    :equilateral #(apply = %)
-    :scalene     #(= 1 (most-repeats %))
-    :isosceles   #(= 2 (most-repeats %))))
+(def ^:private type-by-count-of-equal-sides
+  {1 :scalene
+   2 :isosceles
+   3 :equilateral})
+
+(defn- illogical? [sides]
+  (let [ordered-sides (sort sides)]
+    (<= (reduce + (take 2 ordered-sides))
+        (last ordered-sides))))
 
 (defn type [& sides]
   {:pre [(= 3 (count sides))]}
-  (some (fn [[type type-fn]]
-          (when (type-fn sides) type))
-        type-tests))
+  (if (illogical? sides)
+    :illogical
+    (get type-by-count-of-equal-sides (most-repeats sides))))
