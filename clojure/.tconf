@@ -1,0 +1,10 @@
+# lower-left pane
+tmux split-window -v
+tmux resize-pane -D 10
+tmux send-keys "lein auto test" C-m
+
+# lower-right pane
+tmux split-window -h
+tmux send-keys "lein repl" C-m
+
+tmux select-pane -U
