@@ -8,3 +8,4 @@ tmux split-window -h
 tmux send-keys "lein repl" C-m
 
 tmux select-pane -U
+tmux send-keys "v -o README.md test/*" C-m
