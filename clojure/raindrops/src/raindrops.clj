@@ -6,11 +6,7 @@
                       7 "Plong"})
 
 (defn convert [n]
-  (if-let
-    [pl*ngs (seq (map val
-                      (filter
-                        (comp zero? (partial mod n) first)
-                        pl*ng)))]
+  (if-let [pl*ngs (seq (for [[k v] pl*ng :when (zero? (mod n k))] v))]
     (apply str pl*ngs)
     (str n)))
 
