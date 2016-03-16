@@ -17,7 +17,5 @@
 (def valid? (comp zero? checksum))
 
 (defn add-check-digit [n]
-  (->> (range 10)
-       (map (partial + (* 10 n)))
-       (filter valid?)
-       first))
+  (let [shifted-n (* 10 n)]
+    (+ shifted-n (- 10 (checksum shifted-n)))))
