@@ -5,9 +5,9 @@
 
 (defn sieve [upto]
   (loop [primes []
-         possible-primes (range 2 (inc upto))]
-    (if (seq possible-primes)
+         [prime & possible-primes] (range 2 (inc upto))]
+    (if prime
       (recur
-        (conj primes (first possible-primes))
-        (remove #(divisible? % (first possible-primes)) (rest possible-primes)))
+        (conj primes prime)
+        (remove #(divisible? % prime) possible-primes))
       primes)))
