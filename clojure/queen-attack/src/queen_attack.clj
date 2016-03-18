@@ -4,10 +4,8 @@
 (def ^:private board-size 8)
 
 (defn board-string [queens]
-  (let [empty-board (->> (range board-size)
-                         (map (fn [row]
-                                (map (constantly "_") (range board-size))))
-                         (map vec) vec)
+  (let [empty-board (->> "_" (repeat board-size) vec
+                             (repeat board-size) vec)
         populated-board (reduce-kv (fn [board color coords]
                                      (assoc-in board coords
                                                (upper-case (name color))))
