@@ -1,27 +1,59 @@
 (ns binary-search-tree)
 
-(def left :left)
-(def right :right)
-(def value :value)
+(defprotocol IBinarySearchTree
+  (left [this])
+  (right [this])
+  (value [this]))
+
+(deftype Tree [root]
+  IBinarySearchTree
+  (left [this] (Tree. (:left root)))
+  (right [this] (Tree. (:right root)))
+  (value [this] (:value root))
+
+  clojure.lang.IPersistentCollection
+  (cons [this v]
+    (letfn [(cons* [{:keys [left right value] :as node} v]
+              (if node
+                (if (> v value)
+                  (assoc node :right (cons* right v))
+                  (assoc node :left (cons* left v)))
+                {:value v}))]
+      (Tree. (cons* root v))))
+  (empty [this] (Tree. nil))
+  (equiv [this other] (= root (.root other)))
+
+  clojure.lang.ISeq
+  (seq [this] (when (contains? root :value) this))
+  (first [this]
+    (letfn [(first* [{:keys [left value]}]
+              (if left
+                (recur left)
+                value))]
+      (first* root)))
+  (next [this]
+    (letfn [(next* [{:keys [value left right] :as node} path]
+              (cond
+                left (recur left (conj path :left))
+                (seq path) (Tree. (assoc-in root path right)) ;; right may be nil
+                :else (Tree. right)))]
+      (next* root [])))
+  (more [this] (rest this)))
+
+(defmethod print-method Tree [tree ^java.io.Writer w]
+  (.write w (str "#Tree" (.root tree))))
+
+(defn tree [& items]
+  (reduce conj (Tree. nil) items))
 
 (defn singleton [v]
-  {:value v
-   :left  nil
-   :right nil})
+  (tree v))
 
-(defn insert [v {:keys [left right value] :as node}]
-  (if node
-    (if (> v value)
-      (assoc node :right (insert v right))
-      (assoc node :left (insert v left)))
-    (singleton v)))
+(defn insert [v tree]
+  (conj tree v))
 
-(defn from-list [values]
-  (reduce #(insert %2 %1) nil values))
+(defn from-list [items]
+  (apply tree items))
 
-(defn to-list [node]
-  (letfn [(reduce-tree [{:keys [left right value] :as node} result]
-            (if node
-              (concat result (reduce-tree left []) (reduce-tree right [value]))
-              result))]
-    (reduce-tree node [])))
+(defn to-list [tree]
+  (into [] tree))
