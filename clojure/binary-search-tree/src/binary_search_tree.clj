@@ -11,7 +11,7 @@
   (right [this] (Tree. (:right root)))
   (value [this] (:value root))
 
-  clojure.lang.IPersistentCollection
+  clojure.lang.ISeq
   (cons [this v]
     (letfn [(cons* [{:keys [left right value] :as node} v]
               (if node
@@ -22,23 +22,21 @@
       (Tree. (cons* root v))))
   (empty [this] (Tree. nil))
   (equiv [this other] (= root (.root other)))
-
-  clojure.lang.ISeq
-  (seq [this] (when (contains? root :value) this))
   (first [this]
     (letfn [(first* [{:keys [left value]}]
               (if left
                 (recur left)
                 value))]
       (first* root)))
-  (next [this]
-    (letfn [(next* [{:keys [value left right] :as node} path]
+  (more [this]
+    (letfn [(more* [{:keys [value left right] :as node} path]
               (cond
                 left (recur left (conj path :left))
                 (seq path) (Tree. (assoc-in root path right)) ;; right may be nil
                 :else (Tree. right)))]
-      (next* root [])))
-  (more [this] (rest this)))
+      (more* root [])))
+  (next [this] (seq (.more this)))
+  (seq [this] (when (contains? root :value) this)))
 
 (defmethod print-method Tree [tree ^java.io.Writer w]
   (.write w (str "#Tree" (.root tree))))
