@@ -1,0 +1,11 @@
+# lower-left pane
+tmux split-window -v
+tmux resize-pane -D 10
+tmux send-keys "elm-test *Tests.elm" C-m
+
+# # lower-right pane
+# tmux split-window -h
+# tmux send-keys "lein repl" C-m
+
+tmux select-pane -U
+tmux send-keys "v -o README.md *Tests.elm" C-m
