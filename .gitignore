@@ -19,3 +19,5 @@ lua/
 ocaml/
 plsql/
 swift/
+.exercism/
+*.out
